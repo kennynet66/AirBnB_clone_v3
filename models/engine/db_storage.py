@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Contains the class DBStorage
+Contains instance of a class (DBStorage)
 """
 
 import models
@@ -21,12 +21,12 @@ classes = {"Amenity": Amenity, "City": City,
 
 
 class DBStorage:
-    """interaacts with the MySQL database"""
+    """links with the MySQL dbse"""
     __engine = None
     __session = None
 
     def __init__(self):
-        """Instantiate a DBStorage object"""
+        """Create an instance of a DBStore obj"""
         HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
         HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
         HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
@@ -41,7 +41,7 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session"""
+        """query on the current db sessn"""
         new_dict = {}
         for clss in classes:
             if cls is None or cls is classes[clss] or cls is clss:
@@ -52,36 +52,36 @@ class DBStorage:
         return (new_dict)
 
     def get(self, cls, id):
-        """retrieves an object of a class with id"""
+        """fetches an objct class with Id"""
         obj = None
         if cls is not None and issubclass(cls, BaseModel):
             obj = self.__session.query(cls).filter(cls.id == id).first()
         return obj
 
     def count(self, cls=None):
-        """retrieves the number of objects of a class or all (if cls==None)"""
+        """Fetches the no. of objcts of a class instance or all (if cls===None)"""
         return len(self.all(cls))
 
     def new(self, obj):
-        """add the object to the current database session"""
+        """add the objct to the present|logged in dbse session"""
         self.__session.add(obj)
 
     def save(self):
-        """commit all changes of the current database session"""
+        """commits all changes of the logged in dbse seshion"""
         self.__session.commit()
 
     def delete(self, obj=None):
-        """delete from the current database session obj if not None"""
+        """perm.deletes from the present dbse session obj if not None"""
         if obj is not None:
             self.__session.delete(obj)
 
     def reload(self):
-        """reloads data from the database"""
+        """refreshes data from the database"""
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
 
     def close(self):
-        """call remove() method on the private session attribute"""
+        """calls remove()function method on the private sesh attrb"""
         self.__session.remove()

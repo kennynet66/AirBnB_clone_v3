@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Contains the FileStorage class
+Contains the FS class instance
 """
 
 import json
@@ -17,7 +17,7 @@ classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
 
 
 class FileStorage:
-    """serializes instances to a JSON file & deserializes back to instances"""
+    """ID's instances to a JSON file & de-id's back to instances"""
 
     # string - path to the JSON file
     __file_path = "file.json"
@@ -25,7 +25,7 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """returns the dictionary __objects"""
+        """returns the tuple __objcts"""
         if cls is not None:
             new_dict = {}
             for key, value in self.__objects.items():
@@ -35,7 +35,7 @@ class FileStorage:
         return self.__objects
 
     def get(self, cls, id):
-        """retrieves an object of a class using the id"""
+        """fetches an objct of a class instance using the Id"""
         if cls is not None:
             res = list(
                 filter(
@@ -48,17 +48,17 @@ class FileStorage:
         return None
 
     def count(self, cls=None):
-        """retrieves the number of objects of a class or all (if cls==None)"""
+        """Fetches the no. of objects of a class instance or all (if cls===None)"""
         return len(self.all(cls))
 
     def new(self, obj):
-        """sets in __objects the obj with key <obj class name>.id"""
+        """puts in __objects the obj with key <obj class name>.id"""
         if obj is not None:
             key = obj.__class__.__name__ + "." + obj.id
             self.__objects[key] = obj
 
     def save(self):
-        """serializes __objects to the JSON file (path: __file_path)"""
+        """ID's __objcts to the JSON file (path: __file_path)"""
         json_objects = {}
         for key in self.__objects:
             json_objects[key] = self.__objects[key].to_dict()
@@ -66,22 +66,22 @@ class FileStorage:
             json.dump(json_objects, f)
 
     def reload(self):
-        """deserializes the JSON file to __objects"""
+        """de-ID's the JSON files to __objcts"""
         try:
             with open(self.__file_path, 'r') as f:
-                jo = json.load(f)
-            for key in jo:
-                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+                jon = json.load(f)
+            for key in jon:
+                self.__objects[key] = classes[jon[key]["__class__"]](**jon[key])
         except Exception:
             pass
 
-    def delete(self, obj=None):
-        """delete obj from __objects if it’s inside"""
-        if obj is not None:
-            key = obj.__class__.__name__ + '.' + obj.id
+    def delete(self, objt=None):
+        """deletes|Removes obj from __objct if it’s in"""
+        if objt is not None:
+            key = objt.__class__.__name__ + '.' + objt.id
             if key in self.__objects:
                 del self.__objects[key]
 
     def close(self):
-        """call reload() method for deserializing the JSON file to objects"""
+        """call reload() | refresh() method | fuction for de-id'ing the JSON file to objct"""
         self.reload()
